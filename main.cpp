@@ -11,9 +11,7 @@ using namespace std;
 
 int main(int argc, char* argv[]) {
 
-    cout << "Hello1";
 	Lexer activate(argv[1]);
-	cout << "Hello99";
         
 	
 	return 0;

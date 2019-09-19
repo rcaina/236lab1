@@ -14,7 +14,6 @@ class Lexer {
 public:
 	Lexer(){}
 	Lexer(char* readMe);
-	void isColon(char item, char hold, int line);
 
 
 

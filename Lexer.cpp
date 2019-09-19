@@ -18,7 +18,8 @@ Lexer::Lexer(char* readMe) {
 
 	char item;
 	int line_num = 1;
-	char hold;
+	int hold_num = 0;
+	//char hold;
 	string currentString = "";
 	string temp;
 	Tokens t;
@@ -64,7 +65,7 @@ Lexer::Lexer(char* readMe) {
 				currentString == "";
 				currentString.clear();
 			}
-			else{
+			else if (item != '\''){
 			    t = Tokens("ID", currentString, line_num);
 				myTokens.push_back(t);
 				currentString == "";
@@ -75,7 +76,7 @@ Lexer::Lexer(char* readMe) {
 		//	myfile.get(item);
 		}
 
-        else {
+       // else {
 			switch (item) {
                   cout <<"66";
 			case '+':
@@ -94,14 +95,21 @@ Lexer::Lexer(char* readMe) {
 				break;
 			case ':':
 			
-			    cout << "stuck6?\n";
-			    hold = myfile.peek();
-			    isColon(item, hold, line_num);
+			    if (myfile.peek()== '-'){
+				t = Tokens("COLON_DASH", ":-", line_num);
+					myTokens.push_back(t);
+					myfile.get(item);
+				}
+				else {
+
+				t = Tokens("COLON", ":", line_num);
+				myTokens.push_back(t);
+				}
 
 				break;
 			case '(':
 			cout << "stuck8?\n";
-				t = Tokens("LEFT_PARAN", "(", line_num);
+				t = Tokens("LEFT_PAREN", "(", line_num);
 				myTokens.push_back(t);
 
 				cout << "stuck9?\n";
@@ -109,7 +117,7 @@ Lexer::Lexer(char* readMe) {
 			case ')':
 			cout << "stuck10?\n";
 
-				t = Tokens("RIGHT_PARAN", ")", line_num);
+				t = Tokens("RIGHT_PAREN", ")", line_num);
 				myTokens.push_back(t);
 
 				cout << "stuck11?\n";
@@ -140,7 +148,7 @@ Lexer::Lexer(char* readMe) {
 				if (myfile.peek() == '|') {
                        
                         cout << "stuck22?\n";
-					while (item != '|' && myfile.peek() != '#' || !myfile.eof()) {
+					while (item != '|' && myfile.peek() != '#') {
 						 cout << "stuck23?\n";
 						 
 						if (item == '\n') {
@@ -171,8 +179,6 @@ Lexer::Lexer(char* readMe) {
 
 					while ( item != '\n') {
 
-					    cout << "stuck30?\n";
-
 						currentString = currentString + item;
 						myfile.get(item);
 						cout << "stuck31?\n";
@@ -190,24 +196,38 @@ Lexer::Lexer(char* readMe) {
 				}
 				cout << "stuck40?\n";
 
-          //  case '\'':
-            //    currentString = currentString + item;
-			//	myfile.get(item);
-              //  while(item != '\''){
-                //    currentString = currentString + item;
-				//	myfile.get(item);
-				//	if(item =='\'' && myfile.peek() == '\''){
-				//	    myfile.get(item);
-				//	    currentString = currentString + item;
-				//	    myfile.get(item);
-				//	}
-                //}
-                
-                
-                //break;
+            case '\'':
+                currentString = currentString + item;
+				myfile.get(item);
+				hold_num = line_num;
+				if(item == '\n'){
+					line_num++;
+				}
+                while(item !='\''){
+                    currentString = currentString + item;
+					myfile.get(item);
+					if(item == '\n'){
+					    	line_num++;
+					    }
+					else if(item =='\'' && myfile.peek() == '\''){
+						currentString = currentString + item;
+					    myfile.get(item);
+					    currentString = currentString + item;
+					    myfile.get(item);
+					}
+					else if(item == '\''){
+				    	currentString = currentString + item;
+				    }
+                }
+                myfile.get(item);
+                t = Tokens("STRING", currentString, hold_num);
+				myTokens.push_back(t);
+				currentString == "";
+				currentString.clear();
+				myfile.putback(item);
+                break;
 
 			case '\n':
-			    cout << "55";
 				line_num++;
 				
 				break;
@@ -224,42 +244,23 @@ Lexer::Lexer(char* readMe) {
 						cout << currentString;
 				break;
 			}
-            cout << "stucksw?\n";
-        }
-       cout << item;
 
        cout << "stuckwhile?\n";
 	}
-       
         t = Tokens("EOF", "", line_num);
     	myTokens.push_back(t);
 
-        cout << myTokens.size();
-        for(int i = 0; i < myTokens.size(); i++){
+        int k = myTokens.size();
+        for(int i = 0; i < k; i++){
+        	
         myTokens[i].toString();
         
         }
 
+        cout << "Total Tokens = " << k << "\n";
 }
 
 
 
 
-void Lexer::isColon(char item, char hold, int line_num){
-    
-    Tokens t;
-    	if (isspace(hold)){
-			t = Tokens("COLON", ":", line_num);
-			myTokens.push_back(t);
-
-		}
-		else {
-
-			if (hold == '-') {
-				t = Tokens("COLON_DASH", ":-", line_num);
-				myTokens.push_back(t);
-
-			}
-		}
-}
 
