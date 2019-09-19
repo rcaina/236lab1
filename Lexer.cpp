@@ -78,7 +78,7 @@ Lexer::Lexer(char* readMe) {
 
        // else {
 			switch (item) {
-                  cout <<"66";
+                  
 			case '+':
 			cout << "stuck2?\n";
 				t = Tokens("ADD", "+", line_num);
@@ -144,66 +144,70 @@ Lexer::Lexer(char* readMe) {
 				cout << "stuck18?\n";
 				break;
 			case '#':
-			 cout << "stuck20?\n";
-				if (myfile.peek() == '|') {
-                       
-                        cout << "stuck22?\n";
-					while (item != '|' && myfile.peek() != '#') {
-						 cout << "stuck23?\n";
-						 
-						if (item == '\n') {
-						    currentString = currentString + item;
-						    
-							cout << "stuck24?\n";
-						}
-						else {
-						    currentString = currentString + item;
-						    cout << "stuck25?\n";
-		
-						}
-						myfile.get(item);
-					} 
-                    
-					currentString = currentString + item;
-					myfile.get(item);
-			        line_num++;
-					currentString = currentString + item;
-                     cout << "stuck28?\n";
-					t = Tokens("BLOCK_COMMENT", currentString, line_num);
-					myTokens.push_back(t);
-					currentString = "";
-					cout << currentString;
-					break;
-				}
-				else {
+				
 
-					while ( item != '\n') {
 
-						currentString = currentString + item;
-						myfile.get(item);
-						cout << "stuck31?\n";
-					}
-			
-				    cout << "stuck32?\n";
-					t = Tokens("COMMENT", currentString, line_num);
-					myTokens.push_back(t);
-					currentString == "";
-					currentString.clear();
-					cout << "stuck33?\n";
-					cout << item;
-					line_num++;
-					break;
-				}
-				cout << "stuck40?\n";
+ currentString = currentString + item;
+ hold_num = line_num;
 
-            case '\'':
+ while(myfile.peek() != '\n'){
+
+ if(myfile.peek() == '|'){
+
+ myfile.get(item);
+
+ while(item != '|' && myfile.peek() != '#'){
+
+ currentString = currentString + item;
+ myfile.get(item);
+ if(item == '\n'){
+
+ line_num++;
+ }
+
+ if(myfile.eof()){
+
+ t = Tokens("UNDEFINED", currentString, line_num);
+ myTokens.push_back(t);
+ currentString == "";
+ currentString.clear();
+ break;
+ }
+ }
+ myfile.get(item);
+ currentString = currentString + item;
+ t = Tokens("ID", currentString, line_num);
+ myTokens.push_back(t);
+ currentString == "";
+ currentString.clear();
+ break;
+ }
+
+ else{
+ while(myfile.peek() != '\n'){
+ currentString = currentString + item;
+ myfile.get(item);
+ }
+
+ t = Tokens("ID", currentString, line_num);
+ myTokens.push_back(t);
+ currentString == "";
+ currentString.clear();
+ break;
+ }
+ }
+
+
+
+
+		        case '\'':
                 currentString = currentString + item;
 				myfile.get(item);
 				hold_num = line_num;
 				if(item == '\n'){
 					line_num++;
 				}
-                while(item !='\''){
+                	while(item !='\''){
                     currentString = currentString + item;
 					myfile.get(item);
 					if(item == '\n'){
@@ -262,5 +266,4 @@ Lexer::Lexer(char* readMe) {
 
 
 
-
-
+                             
