@@ -132,7 +132,6 @@ Lexer::Lexer(char* readMe) {
 				hold_num = line_num;
 
 				if(item == '|'){
-					currentString = currentString + item;
 
 					while(done == false){
 							
@@ -143,29 +142,44 @@ Lexer::Lexer(char* readMe) {
 
 						currentString = currentString + item;
 						myfile.get(item);
-							
-						
-						if(myfile.eof()){
-
-							t = Tokens("UNDEFINED", currentString, hold_num);
-	                                                myTokens.push_back(t);
-        	                                        currentString = "";
-							currentString.clear();
-							hold_num = 0;
-							break;
-						}
 						if(item == '|' && myfile.peek() == '#'){
 
+							currentString = currentString + item;
 							done = true;
 						}
+
+//						currentString = currentString + item;
+//                                                myfile.get(item);
+
+
+                                                if(myfile.eof()){
+
+                                                        t = Tokens("UNDEFINED", currentString, hold_num);
+                                                        myTokens.push_back(t);
+                                                        currentString = "";
+                                                        currentString.clear();
+                                                        hold_num = 0;
+                                                        break;
+                                                }
 
 					}
 					if(item == '|' && myfile.peek() == '#'){
 
-                                                        
+//						if(hold_num == line_num){
+//
+//							myfile.get(item);
+  //                                              	currentString = currentString + item;
+//							t = Tokens("COMMENT", currentString, hold_num);
+//		                                        myTokens.push_back(t);
+  //              		                        currentString == "";
+    //                            		        currentString.clear();
+      //          		                        hold_num = 0;
+        //                        		        break;
+
+	//					}
 						myfile.get(item);
 						currentString = currentString + item;
-                                                t = Tokens("BLOCK_COMMENT", currentString, hold_num);
+                                                t = Tokens("COMMENT", currentString, hold_num);
                                                 myTokens.push_back(t);
                                                 currentString == "";
                                                 currentString.clear();
@@ -197,7 +211,6 @@ Lexer::Lexer(char* readMe) {
 		        case '\'':
 
 				i++;
-			//	h++;
 				hold_num = line_num;
 				currentString = currentString + item;
 				myfile.get(item);
@@ -206,6 +219,11 @@ Lexer::Lexer(char* readMe) {
 					line_num++;
 
 					while(done == false){
+
+						if(item == '\''){
+
+							i++;
+						}
 
 						currentString = currentString + item;
 					        myfile.get(item);
@@ -221,18 +239,22 @@ Lexer::Lexer(char* readMe) {
 							line_num++;
 						}
 
+
 					}
-					if(myfile.eof()){
 
-                                                 t = Tokens("UNDEFINED", currentString, hold_num);
-                                                 myTokens.push_back(t);
-                                                 currentString = "";
-                                                 currentString.clear();
-                                                 hold_num = 0;
-						 i = 0;
-               		                         break;
-                                        }
+					if(i%2 != 0){
 
+						currentString = currentString + item;
+	                                        t = Tokens("UNDEFINED", currentString, hold_num);
+        	                                myTokens.push_back(t);
+                	                        currentString == "";
+                        	                currentString.clear();
+                                	        hold_num = 0;
+                                        	done = false;
+                                        	i = 0;
+                                        	break;
+
+					}
 					t = Tokens("STRING", currentString, hold_num);
                                         myTokens.push_back(t);
                                         currentString == "";
@@ -257,7 +279,6 @@ Lexer::Lexer(char* readMe) {
 					}
 					if(item == '\n' && i%2 == 0){
 						line_num++;
-					//	currentString = currentString + item;
 	        	                        t = Tokens("STRING", currentString, hold_num);
         	        	                myTokens.push_back(t);
                       		         	currentString == "";
@@ -269,8 +290,6 @@ Lexer::Lexer(char* readMe) {
 
 					}
 					else if(item != '\'' && i%2 == 0){
-
-						currentString = currentString + item;
                                                 t = Tokens("STRING", currentString, hold_num);
                                                 myTokens.push_back(t);
                                                 currentString == "";
