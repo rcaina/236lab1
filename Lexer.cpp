@@ -19,16 +19,14 @@ Lexer::Lexer(char* readMe) {
 	int line_num = 1;
 	int hold_num = 0;
 	int i = 0;
-//	int h = 0;
 	bool done = false;
 	
 	string currentString = "";
 	string temp;
 	Tokens t;
-	
+
 	while (myfile.get(item)) {
-	    
-        
+
 		if (isalpha(item)) {
 
 			while (isalnum(item)) {
@@ -148,11 +146,7 @@ Lexer::Lexer(char* readMe) {
 							done = true;
 						}
 
-//						currentString = currentString + item;
-//                                                myfile.get(item);
-
-
-                                                if(myfile.eof()){
+						if(myfile.eof()){
 
                                                         t = Tokens("UNDEFINED", currentString, hold_num);
                                                         myTokens.push_back(t);
@@ -165,18 +159,6 @@ Lexer::Lexer(char* readMe) {
 					}
 					if(item == '|' && myfile.peek() == '#'){
 
-//						if(hold_num == line_num){
-//
-//							myfile.get(item);
-  //                                              	currentString = currentString + item;
-//							t = Tokens("COMMENT", currentString, hold_num);
-//		                                        myTokens.push_back(t);
-  //              		                        currentString == "";
-    //                            		        currentString.clear();
-      //          		                        hold_num = 0;
-        //                        		        break;
-
-	//					}
 						myfile.get(item);
 						currentString = currentString + item;
                                                 t = Tokens("COMMENT", currentString, hold_num);
@@ -220,11 +202,22 @@ Lexer::Lexer(char* readMe) {
 
 					while(done == false){
 
+						if(myfile.eof()){
+							currentString = currentString + item;
+                                                	t = Tokens("UNDEFINED", currentString, hold_num);
+                                                	myTokens.push_back(t);
+                                                	currentString == "";
+                                                	currentString.clear();
+                                                	hold_num = 0;
+                                                	done = false;
+                                                	i = 0;
+                                                	break;
+						}
+
 						if(item == '\''){
 
 							i++;
 						}
-
 						currentString = currentString + item;
 					        myfile.get(item);
 
@@ -232,16 +225,13 @@ Lexer::Lexer(char* readMe) {
                                                 
                                                         done = true;
                                                 }
-
-
+						
 						if(item == '\n'){
 
 							line_num++;
 						}
 
-
 					}
-
 					if(i%2 != 0){
 
 						currentString = currentString + item;
@@ -254,6 +244,9 @@ Lexer::Lexer(char* readMe) {
                                         	i = 0;
                                         	break;
 
+					}
+					if(myfile.peek() == EOF){
+						break;
 					}
 					t = Tokens("STRING", currentString, hold_num);
                                         myTokens.push_back(t);
@@ -272,7 +265,6 @@ Lexer::Lexer(char* readMe) {
 					myfile.get(item);
 
 					while(item == '\''){
-
 						i++;
 						currentString = currentString + item;
 						myfile.get(item);
@@ -305,7 +297,6 @@ Lexer::Lexer(char* readMe) {
 				if( i == 1){
 	
 					while(item != '\''){
-	
 						currentString = currentString + item;
 						myfile.get(item);
 
@@ -365,6 +356,7 @@ Lexer::Lexer(char* readMe) {
 						cout << currentString;
 				break;
 			}
+
 
 	}
         t = Tokens("EOF", "", line_num);
